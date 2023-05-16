@@ -3,6 +3,8 @@ package org.uca.chess;
 import javafx.scene.image.Image;
 import javafx.scene.paint.ImagePattern;
 
+import java.util.List;
+
 public class ChessPiece {
     private String name;
     private String color;
@@ -63,5 +65,9 @@ public class ChessPiece {
     @Override
     public String toString() {
         return color+name;
+    }
+
+    public List<Coordinates> getPossibleMoves(ChessPiece[][] board) {
+        return null;
     }
 }

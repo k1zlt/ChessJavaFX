@@ -6,9 +6,11 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 
 import java.util.Arrays;
+import java.util.List;
 
 public class Game {
 
@@ -56,7 +58,9 @@ public class Game {
                 } else {
                     i.setStyle("-fx-background-color: " + toRGBCode(dark) + ";");
                 }
+                ((Pane) i).getChildren().removeIf(j -> j instanceof Circle);
             }
+
         }
     }
     private void cellClick(Pane pane, MouseEvent event) {
@@ -67,7 +71,34 @@ public class Game {
             return;
         }
         pane.setStyle("-fx-background-color: " + toRGBCode(Color.SKYBLUE) + ";");
+        ChessPiece i = getPieceFromPane(pane);
+        assert i != null;
+        List<Coordinates> pmoves = i.getPossibleMoves(this.board);
+        paintTheCells();
+        for (Coordinates c: pmoves) {
+            if (board[c.getRow()][c.getCol()-1] == null) {
+                Circle circle = new Circle(58,60, 25);
+                getPaneFromGridPane(this.boardPane, c.getRow(), c.getCol()).getChildren().add(circle);
+            } else {
+                Circle circle = new Circle(58,60, 50);
+                circle.setStroke(Color.BLACK);
+                circle.setStrokeWidth(10);
+                circle.setFill(Color.TRANSPARENT);
+                getPaneFromGridPane(this.boardPane, c.getRow(), c.getCol()).getChildren().add(circle);
+            }
+        }
+    }
 
+    private ChessPiece getPieceFromPane(Pane pane) {
+        String coor = String.valueOf("abcdefgh".charAt(GridPane.getColumnIndex(pane)-1)) + "87654321".charAt(GridPane.getRowIndex(pane));
+        System.out.println();
+        for (ChessPiece i: this.pieces) {
+            if (i == null) continue;
+            if (i.getCoor().getStr().equals(coor)) {
+                return i;
+            }
+        }
+        return null;
     }
     public void place(ChessPiece piece) {
         Pane cell = getPaneFromGridPane(this.boardPane, piece.getCoor().getRow(), piece.getCoor().getCol());
@@ -79,23 +110,40 @@ public class Game {
     }
 
     public void placePieces() {
-        pieces     = new ChessPiece[32];
+        pieces     = new ChessPiece[64];
+//        pieces[0]  = new Rook("B", "a8");
+//        pieces[1]  = new Rook("B", "h8");
+//        pieces[2]  = new Rook("W", "a1");
+//        pieces[3]  = new Rook("W", "h1");
+//        pieces[4]  = new Knight("B", "b8");
+//        pieces[5]  = new Knight("B", "g8");
+//        pieces[6]  = new Knight("W", "b1");
+//        pieces[7]  = new Knight("W", "g1");
+//        pieces[8]  = new Bishop("B", "c8");
+//        pieces[9]  = new Bishop("B", "f8");
+//        pieces[10] = new Bishop("W", "c1");
+//        pieces[11] = new Bishop("W", "f1");
+//        pieces[12] = new King("B", "e6");
+//        pieces[13] = new Queen("B", "d8");
+//        pieces[14] = new King("W", "e1");
+//        pieces[15] = new Queen("W", "d1");
+
         pieces[0]  = new Rook("B", "a8");
         pieces[1]  = new Rook("B", "h8");
-        pieces[2]  = new Rook("W", "a1");
+        pieces[2]  = new Rook("W", "a4");
         pieces[3]  = new Rook("W", "h1");
         pieces[4]  = new Knight("B", "b8");
         pieces[5]  = new Knight("B", "g8");
-        pieces[6]  = new Knight("W", "b1");
+        pieces[6]  = new Knight("W", "d6");
         pieces[7]  = new Knight("W", "g1");
         pieces[8]  = new Bishop("B", "c8");
         pieces[9]  = new Bishop("B", "f8");
         pieces[10] = new Bishop("W", "c1");
         pieces[11] = new Bishop("W", "f1");
-        pieces[12] = new King("B", "e8");
+        pieces[12] = new King("B", "e6");
         pieces[13] = new Queen("B", "d8");
         pieces[14] = new King("W", "e1");
-        pieces[15] = new Queen("W", "d1");
+        pieces[15] = new Queen("W", "d5");
 
         for (int i = 16; i < 24; i++) {
             pieces[i] = new Pawn("B", "abcdefgh".charAt(i-16)+"7");
@@ -124,9 +172,7 @@ public class Game {
                 if (GridPane.getRowIndex(node) == row && GridPane.getColumnIndex(node) == column) {
                     return (Pane) node;
                 }
-            } catch (Exception e) {
-                continue;
-            }
+            } catch (Exception ignored) {}
         }
         return null;
     }

@@ -30,6 +30,10 @@ public class Coordinates {
     public void setCol(int col) {
         this.col = col;
     }
+
+    public boolean isOnBoard() {
+        return (this.row >= 0 && this.row <= 7 && this.col >= 1 && this.col <= 8);
+    }
     public String toString() {
         return getStr();
     }
