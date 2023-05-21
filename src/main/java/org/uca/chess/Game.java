@@ -23,6 +23,7 @@ public class Game {
 
     private ChessPiece selectedPiece = null;
     private Pane selectedPane = null;
+    private String turn = "W";
 
     public Game(GridPane board) {
         this.boardPane = board;
@@ -37,7 +38,9 @@ public class Game {
         for (int i = 0; i < 64; i++) {
             Pane p = new Pane();
 
-            p.setOnMouseClicked(event -> cellClick(p, event));
+            p.setOnMouseClicked(event -> {
+                    cellClick(p, event);
+            });
 
             p.setPrefWidth(100);
             p.setPrefHeight(100);
@@ -68,6 +71,12 @@ public class Game {
     }
     private void cellClick(Pane pane, MouseEvent event) {
         paintTheCells();
+        boolean moved = false;
+        if (selectedPiece == null && getPieceFromPane(pane) != null) {
+            if (!getPieceFromPane(pane).getColor().equals(turn)) {
+                return;
+            }
+        }
         ChessPiece piece = getPieceFromPane(pane);
         Coordinates focus;
         if (selectedPiece != null) {
@@ -80,18 +89,27 @@ public class Game {
 
         if (selectedPiece != null) {
             List<Coordinates> pmoves = selectedPiece.getPossibleMoves(this.board);
-            for (int i = 0; i<pmoves.size(); i++) {
+            for (int i = 0; i < pmoves.size(); i++) {
                 if (pmoves.get(i).equal(current)) {
-                    board[focus.getRow()][focus.getCol()-1] = null;
-                    board[pmoves.get(i).getRow()][pmoves.get(i).getCol()-1] = selectedPiece;
+                    board[focus.getRow()][focus.getCol() - 1] = null;
+                    board[pmoves.get(i).getRow()][pmoves.get(i).getCol() - 1] = selectedPiece;
                     if (focus != null) remove(focus);
-                    if (current!= null) remove(current);
+                    if (current != null) remove(current);
                     selectedPiece.setCoor2(pmoves.get(i));
                     place(selectedPiece);
+                    moved = true;
+                    if (turn.equals("W")) {
+                        turn = "B";
+                    } else {
+                        turn = "W";
+                    }
                     break;
                 }
             }
-            selectedPiece=null;
+            selectedPiece = null;
+            if (moved) {
+                selectedPiece = piece;
+            }
         } else {
             selectedPiece = piece;
             selectedPane = pane;
@@ -103,12 +121,12 @@ public class Game {
             }
             List<Coordinates> pmoves = piece.getPossibleMoves(this.board);
             paintTheCells();
-            for (Coordinates c: pmoves) {
-                if (board[c.getRow()][c.getCol()-1] == null) {
-                    Circle circle = new Circle(58,60, 25);
+            for (Coordinates c : pmoves) {
+                if (board[c.getRow()][c.getCol() - 1] == null) {
+                    Circle circle = new Circle(58, 60, 25);
                     getPaneFromGridPane(this.boardPane, c.getRow(), c.getCol()).getChildren().add(circle);
                 } else {
-                    Circle circle = new Circle(58,60, 50);
+                    Circle circle = new Circle(58, 60, 50);
                     circle.setStroke(Color.BLACK);
                     circle.setStrokeWidth(10);
                     circle.setFill(Color.TRANSPARENT);
@@ -116,8 +134,6 @@ public class Game {
                 }
             }
         }
-
-
     }
 
     private void remove(Coordinates p) {
