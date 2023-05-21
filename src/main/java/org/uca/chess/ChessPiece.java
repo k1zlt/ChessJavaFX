@@ -50,6 +50,7 @@ public class ChessPiece {
     public void setCoor(String coor) {
         this.coor = new Coordinates(coor);
     }
+    public void setCoor2(Coordinates other) {this.coor=other;}
 
     public void setPath(String path) {
         this.path = path;

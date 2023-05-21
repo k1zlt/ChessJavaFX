@@ -22,7 +22,7 @@ public class Knight extends ChessPiece {
             Coordinates c = new Coordinates(this.getCoorY() + i[0], this.getCoorX() + i[1]);
             if (!c.isOnBoard()) continue;
             if (board[c.getRow()][c.getCol()-1] != null) {
-                if (board[c.getRow()][c.getCol()].getColor().equals(this.getColor())) {
+                if (board[c.getRow()][c.getCol()-1].getColor().equals(this.getColor())) {
                     continue;
                 }
             }

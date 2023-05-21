@@ -21,6 +21,9 @@ public class Game {
     private ChessPiece[] pieces;
     private ObservableList<Node> boardPaneChildren;
 
+    private ChessPiece selectedPiece = null;
+    private Pane selectedPane = null;
+
     public Game(GridPane board) {
         this.boardPane = board;
         setup();
@@ -65,28 +68,61 @@ public class Game {
     }
     private void cellClick(Pane pane, MouseEvent event) {
         paintTheCells();
-        ObservableList<Node> r = pane.getChildren();
-        System.out.println(r);
-        if (r.isEmpty()) {
-            return;
+        ChessPiece piece = getPieceFromPane(pane);
+        Coordinates focus;
+        if (selectedPiece != null) {
+            focus = selectedPiece.getCoor();
+        } else {
+            focus = null;
         }
-        pane.setStyle("-fx-background-color: " + toRGBCode(Color.SKYBLUE) + ";");
-        ChessPiece i = getPieceFromPane(pane);
-        assert i != null;
-        List<Coordinates> pmoves = i.getPossibleMoves(this.board);
-        paintTheCells();
-        for (Coordinates c: pmoves) {
-            if (board[c.getRow()][c.getCol()-1] == null) {
-                Circle circle = new Circle(58,60, 25);
-                getPaneFromGridPane(this.boardPane, c.getRow(), c.getCol()).getChildren().add(circle);
-            } else {
-                Circle circle = new Circle(58,60, 50);
-                circle.setStroke(Color.BLACK);
-                circle.setStrokeWidth(10);
-                circle.setFill(Color.TRANSPARENT);
-                getPaneFromGridPane(this.boardPane, c.getRow(), c.getCol()).getChildren().add(circle);
+        Coordinates current;
+        current = new Coordinates(GridPane.getRowIndex(pane), GridPane.getColumnIndex(pane));
+
+        if (selectedPiece != null) {
+            List<Coordinates> pmoves = selectedPiece.getPossibleMoves(this.board);
+            for (int i = 0; i<pmoves.size(); i++) {
+                if (pmoves.get(i).equal(current)) {
+                    board[focus.getRow()][focus.getCol()-1] = null;
+                    board[pmoves.get(i).getRow()][pmoves.get(i).getCol()-1] = selectedPiece;
+                    if (focus != null) remove(focus);
+                    if (current!= null) remove(current);
+                    selectedPiece.setCoor2(pmoves.get(i));
+                    place(selectedPiece);
+                    break;
+                }
+            }
+            selectedPiece=null;
+        } else {
+            selectedPiece = piece;
+            selectedPane = pane;
+            ObservableList<Node> r = pane.getChildren();
+            pane.setStyle("-fx-background-color: " + toRGBCode(Color.SKYBLUE) + ";");
+            if (piece == null) {
+                System.out.println("There is no any piece in this cell.");
+                return;
+            }
+            List<Coordinates> pmoves = piece.getPossibleMoves(this.board);
+            paintTheCells();
+            for (Coordinates c: pmoves) {
+                if (board[c.getRow()][c.getCol()-1] == null) {
+                    Circle circle = new Circle(58,60, 25);
+                    getPaneFromGridPane(this.boardPane, c.getRow(), c.getCol()).getChildren().add(circle);
+                } else {
+                    Circle circle = new Circle(58,60, 50);
+                    circle.setStroke(Color.BLACK);
+                    circle.setStrokeWidth(10);
+                    circle.setFill(Color.TRANSPARENT);
+                    getPaneFromGridPane(this.boardPane, c.getRow(), c.getCol()).getChildren().add(circle);
+                }
             }
         }
+
+
+    }
+
+    private void remove(Coordinates p) {
+        Pane pane = getPaneFromGridPane(this.boardPane, p.getRow(), p.getCol());
+        (pane).getChildren().removeIf(j -> j instanceof Rectangle);
     }
 
     private ChessPiece getPieceFromPane(Pane pane) {
@@ -111,13 +147,30 @@ public class Game {
 
     public void placePieces() {
         pieces     = new ChessPiece[64];
+        pieces[0]  = new Rook("B", "a8");
+        pieces[1]  = new Rook("B", "h8");
+        pieces[2]  = new Rook("W", "a1");
+        pieces[3]  = new Rook("W", "h1");
+        pieces[4]  = new Knight("B", "b8");
+        pieces[5]  = new Knight("B", "g8");
+        pieces[6]  = new Knight("W", "b1");
+        pieces[7]  = new Knight("W", "g1");
+        pieces[8]  = new Bishop("B", "c8");
+        pieces[9]  = new Bishop("B", "f8");
+        pieces[10] = new Bishop("W", "c1");
+        pieces[11] = new Bishop("W", "f1");
+        pieces[12] = new King("B", "e8");
+        pieces[13] = new Queen("B", "d8");
+        pieces[14] = new King("W", "e1");
+        pieces[15] = new Queen("W", "d1");
+
 //        pieces[0]  = new Rook("B", "a8");
 //        pieces[1]  = new Rook("B", "h8");
-//        pieces[2]  = new Rook("W", "a1");
+//        pieces[2]  = new Rook("W", "a4");
 //        pieces[3]  = new Rook("W", "h1");
 //        pieces[4]  = new Knight("B", "b8");
 //        pieces[5]  = new Knight("B", "g8");
-//        pieces[6]  = new Knight("W", "b1");
+//        pieces[6]  = new Knight("W", "d6");
 //        pieces[7]  = new Knight("W", "g1");
 //        pieces[8]  = new Bishop("B", "c8");
 //        pieces[9]  = new Bishop("B", "f8");
@@ -126,24 +179,7 @@ public class Game {
 //        pieces[12] = new King("B", "e6");
 //        pieces[13] = new Queen("B", "d8");
 //        pieces[14] = new King("W", "e1");
-//        pieces[15] = new Queen("W", "d1");
-
-        pieces[0]  = new Rook("B", "a8");
-        pieces[1]  = new Rook("B", "h8");
-        pieces[2]  = new Rook("W", "a4");
-        pieces[3]  = new Rook("W", "h1");
-        pieces[4]  = new Knight("B", "b8");
-        pieces[5]  = new Knight("B", "g8");
-        pieces[6]  = new Knight("W", "d6");
-        pieces[7]  = new Knight("W", "g1");
-        pieces[8]  = new Bishop("B", "c8");
-        pieces[9]  = new Bishop("B", "f8");
-        pieces[10] = new Bishop("W", "c1");
-        pieces[11] = new Bishop("W", "f1");
-        pieces[12] = new King("B", "e6");
-        pieces[13] = new Queen("B", "d8");
-        pieces[14] = new King("W", "e1");
-        pieces[15] = new Queen("W", "d5");
+//        pieces[15] = new Queen("W", "d5");
 
         for (int i = 16; i < 24; i++) {
             pieces[i] = new Pawn("B", "abcdefgh".charAt(i-16)+"7");

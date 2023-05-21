@@ -34,6 +34,9 @@ public class Coordinates {
     public boolean isOnBoard() {
         return (this.row >= 0 && this.row <= 7 && this.col >= 1 && this.col <= 8);
     }
+    public boolean equal(Coordinates other) {
+        return this.col == other.getCol() && this.row == other.getRow();
+    }
     public String toString() {
         return getStr();
     }
