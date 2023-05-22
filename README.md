@@ -27,7 +27,7 @@ No Additional libraries and pieces of software were used in developing the proje
 ## Installation instructions
 
 The easiest way to install the app is to clone the project from the GitHub using the Intellij Idea
-by 'Project from Existing Sources' option. After cloning the gradle will be automatically build and 
+by 'Project from Version control' option. After cloning the gradle will be automatically build and 
 it could be run by executing the Main.java file.
 
 ## Planned App's features
@@ -39,7 +39,8 @@ it could be run by executing the Main.java file.
 5. Check mate and Draw
 6. Castling
 7. Undo&Redo buttons
-8. ...
+8. Fixing several bugs
+9. ...
 
 ## List of completed features
 
