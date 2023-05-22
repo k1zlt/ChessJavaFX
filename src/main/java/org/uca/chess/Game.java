@@ -179,23 +179,7 @@ public class Game {
         pieces[13] = new Queen("B", "d8");
         pieces[14] = new King("W", "e1");
         pieces[15] = new Queen("W", "d1");
-
-//        pieces[0]  = new Rook("B", "a8");
-//        pieces[1]  = new Rook("B", "h8");
-//        pieces[2]  = new Rook("W", "a4");
-//        pieces[3]  = new Rook("W", "h1");
-//        pieces[4]  = new Knight("B", "b8");
-//        pieces[5]  = new Knight("B", "g8");
-//        pieces[6]  = new Knight("W", "d6");
-//        pieces[7]  = new Knight("W", "g1");
-//        pieces[8]  = new Bishop("B", "c8");
-//        pieces[9]  = new Bishop("B", "f8");
-//        pieces[10] = new Bishop("W", "c1");
-//        pieces[11] = new Bishop("W", "f1");
-//        pieces[12] = new King("B", "e6");
-//        pieces[13] = new Queen("B", "d8");
-//        pieces[14] = new King("W", "e1");
-//        pieces[15] = new Queen("W", "d5");
+        
 
         for (int i = 16; i < 24; i++) {
             pieces[i] = new Pawn("B", "abcdefgh".charAt(i-16)+"7");
